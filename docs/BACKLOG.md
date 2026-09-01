@@ -11,3 +11,11 @@ Definition of Done: see README.md
 | US-05 | As a reader, I want to comment on a post... | Medium | 3 | Backlog | |
 | US-06 | As a reader, I want to follow an author... | Medium | 3 | Backlog | |
 | US-07 | As an author, I want basic analytics... | Low | 5 | Backlog | |
+| US-08 | As a registered user, I want to reset my password via email, so that I can regain access if I forget it. | High | 5 | Backlog |
+| US-09 | As a reader, I want to search posts by tag, so that I can find writing on topics I care about. | Medium | 3 | Backlog |
+
+
+## Justifications for New Stories
+
+- **US-08** (5 points): Involves secure token generation, email delivery, and expiration handling — comparable complexity to US-02's auth work.
+- **US-09** (3 points): Similar scope to browsing the public feed (US-04), just filtered by an additional field.
