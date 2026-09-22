@@ -40,8 +40,9 @@ export const AuthService = {
       throw new EmailAlreadyRegisteredError();
     }
 
-    const tokens = TokenService.issueTokens(user);
-    return { user, ...tokens };
+	const tokens = TokenService.issueTokens(user);
+	const { passwordHash: _passwordHash, ...safeUser } = user;
+	return { user: safeUser, ...tokens };
   },
 
   async login({ email, password }) {
