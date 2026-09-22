@@ -40,9 +40,9 @@ export const AuthService = {
       throw new EmailAlreadyRegisteredError();
     }
 
-	const tokens = TokenService.issueTokens(user);
-	const { passwordHash: _passwordHash, ...safeUser } = user;
-	return { user: safeUser, ...tokens };
+const tokens = TokenService.issueTokens(user);
+const { passwordHash: _passwordHash, ...safeUser } = user;
+return { user: safeUser, ...tokens };
   },
 
   async login({ email, password }) {
@@ -57,8 +57,10 @@ export const AuthService = {
     }
 
     const tokens = TokenService.issueTokens(user);
-    return { user, ...tokens };
+    const { passwordHash: _passwordHash, ...safeUser } = user;
+    return { user: safeUser, ...tokens };
   },
 };
+
 
 export { EmailAlreadyRegisteredError, WeakPasswordError, InvalidCredentialsError, ValidationError };
