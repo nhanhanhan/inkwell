@@ -31,3 +31,13 @@
 - Commits in repository (before the Lecture 11 commit): 17
 - Logged defects: 1
 - Backlog items at "Requirements Defined" or later: 4 of 9
+
+## Testing (updated Lecture 14)
+- Unit tests: Services and Repositories (Jest) — ACTIVE (Lecture 12)
+- Integration tests: Routes → Services → Repositories, real test DB (Supertest) — ACTIVE (Lecture 13)
+- Component tests: React components (RTL) — ACTIVE (Lecture 13)
+- End-to-end tests: critical user flows, mobile + tablet + desktop viewports (Playwright) — ACTIVE (Lecture 14)
+- Automated accessibility checks (axe-core) — ACTIVE (Lecture 14)
+- Documentation verification (README, Section 4.10) — ACTIVE (Lecture 14)
+- Security testing — starting Lecture 15
+- Performance/load testing — deferred; revisit at Lecture 19-20 (architecture scale-out)
