@@ -25,6 +25,9 @@ export default defineConfig({
       cwd: "./server",
       port: 4000,
       reuseExistingServer: !process.env.CI,
+      // E2E tests register several users per run; keep the auth rate limiter
+      // (default 5 per 10 min) from blocking them.
+      env: { AUTH_RATE_LIMIT_MAX: "1000" },
     },
     {
       command: "npm run dev",
