@@ -19,6 +19,14 @@ export function clampPageSize(value) {
 }
 
 export const PostService = {
+  async getById(id) {
+    return PostRepository.findById(id);
+  },
+
+  async delete(id) {
+    return PostRepository.deleteById(id);
+  },
+
   async publish({ authorId, title, body, tagNames = [] }) {
     assertNonEmpty(title, "title", "MISSING_TITLE");
     assertNonEmpty(body, "body", "MISSING_BODY");

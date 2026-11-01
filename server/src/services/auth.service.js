@@ -6,6 +6,7 @@ import bcrypt from "bcrypt";
 import { UserRepository } from "../repositories/user.repository.js";
 import { assertNonEmpty, ValidationError } from "../utils/validation.js";
 import { TokenService } from "./token.service.js";
+import { logger } from "../lib/logger.js";
 
 class EmailAlreadyRegisteredError extends Error {}
 class WeakPasswordError extends Error {}
@@ -29,7 +30,7 @@ export const AuthService = {
       throw new WeakPasswordError();
     }
 
-const passwordHash = await bcrypt.hash(password, BCRYPT_COST_FACTOR);
+    const passwordHash = await bcrypt.hash(password, BCRYPT_COST_FACTOR);
 
     let user;
     try {
@@ -41,19 +42,18 @@ const passwordHash = await bcrypt.hash(password, BCRYPT_COST_FACTOR);
       throw new EmailAlreadyRegisteredError();
     }
 
-const tokens = TokenService.issueTokens(user);
-const { passwordHash: _passwordHash, ...safeUser } = user;
-return { user: safeUser, ...tokens };
+    const tokens = TokenService.issueTokens(user);
+    const { passwordHash: _passwordHash, ...safeUser } = user;
+    return { user: safeUser, ...tokens };
   },
 
   async login({ email, password }) {
     const user = await UserRepository.findByEmail(email);
-    if (!user) {
-      throw new InvalidCredentialsError();
-    }
+    const matches = user ? await bcrypt.compare(password, user.passwordHash) : false;
 
-    const matches = await bcrypt.compare(password, user.passwordHash);
-    if (!matches) {
+    if (!user || !matches) {
+      // A09 fix: a failed login is a recorded, searchable event, not a silent failure.
+      logger.warn({ event: "auth.login.failed", email }, "Failed login attempt");
       throw new InvalidCredentialsError();
     }
 
@@ -62,6 +62,5 @@ return { user: safeUser, ...tokens };
     return { user: safeUser, ...tokens };
   },
 };
-
 
 export { EmailAlreadyRegisteredError, WeakPasswordError, InvalidCredentialsError, ValidationError };
