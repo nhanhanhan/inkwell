@@ -1,0 +1,40 @@
+# docker-compose.yml
+#
+# Defines the server, database, network connection, and persistent storage
+# in one reviewable, version-controlled file.
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: inkwell
+      POSTGRES_PASSWORD: inkwell
+      POSTGRES_DB: inkwell_dev
+    ports:
+      - "5433:5432"
+      # Host port 5433 avoids clashing with the existing inkwell-postgres
+      # container on 5432. The server reaches the database as db:5432
+      # through Docker's internal network.
+    volumes:
+      - inkwell_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U inkwell -d inkwell_dev"]
+      interval: 2s
+      timeout: 5s
+      retries: 15
+
+  server:
+    build: ./server
+    environment:
+      DATABASE_URL: postgresql://inkwell:inkwell@db:5432/inkwell_dev
+      # Secrets are read from the root .env file, never written here.
+      ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET:?set ACCESS_TOKEN_SECRET in .env}
+      REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET:?set REFRESH_TOKEN_SECRET in .env}
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  inkwell_db_data:
