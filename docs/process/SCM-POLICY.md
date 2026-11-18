@@ -28,3 +28,13 @@ Examples:
 A consistent `<type>(<scope>)` prefix makes the project history searchable.
 For example, `git log --grep="^security"` quickly finds every security-related
 change, which turns the commit history into a useful audit trail.
+
+## CI Enforcement (Lecture 20)
+
+`main` is now a protected branch:
+
+- Required status checks: dependency-audit, server-tests, client-tests, e2e-tests, docker-build
+- No direct pushes to main; all changes go through a pull request
+- Branches must be up to date with main before merging
+- The rule applies to administrators too
+- This turns Lecture 17's "main is always deployable" policy from a documented intention into a mechanically enforced guarantee: a pull request cannot merge until every required check passes.
