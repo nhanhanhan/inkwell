@@ -1,0 +1,49 @@
+services:
+  - type: web
+    name: inkwell-staging
+    runtime: image
+    plan: free
+    image:
+      url: ghcr.io/nhanhanhan/inkwell-server:c0cec6069594e8c5c8637d00c5d710e11caa0949
+      creds:
+        fromRegistryCreds:
+          name: ghcr-read-packages
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: inkwell-db
+          property: connectionString
+      - key: NODE_ENV
+        value: staging
+      - key: ACCESS_TOKEN_SECRET
+        generateValue: true
+      - key: REFRESH_TOKEN_SECRET
+        generateValue: true
+
+  - type: web
+    name: inkwell-production
+    runtime: image
+    plan: free
+    image:
+      url: ghcr.io/nhanhanhan/inkwell-server:c0cec6069594e8c5c8637d00c5d710e11caa0949
+      creds:
+        fromRegistryCreds:
+          name: ghcr-read-packages
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: inkwell-db
+          property: connectionString
+      - key: NODE_ENV
+        value: production
+      - key: ACCESS_TOKEN_SECRET
+        generateValue: true
+      - key: REFRESH_TOKEN_SECRET
+        generateValue: true
+
+databases:
+  - name: inkwell-db
+    plan: free
+    # Free Render Postgres expires 30 days after creation; recreate or upgrade it.
